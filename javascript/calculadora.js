@@ -13,14 +13,18 @@ function AddValue(value) {
         if (calculation[calculation.length - 1] == "+" || calculation[calculation.length - 1] == "-" ||
             calculation[calculation.length - 1] == "/" || calculation[calculation.length - 1] == "*" ||
             calculation[calculation.length - 1] == "%") {
-                calculation = calculation.slice(0, -1) + value;
-                display.innerHTML = calculation; 
-                return
-            }
-    } 
+            calculation = calculation.slice(0, -1) + value;
+            display.innerHTML = calculation;
+            return
+        }
+    }
 
     if (value == "(") {
-        if (lastCaracterIsNumber()){
+        if (calculation == '') {
+            calculation += '('
+        }
+
+        if (lastCaracterIsNumber()) {
             if (AnyCaracterIsOperator()) {
                 calculation += ')'
             }
@@ -28,13 +32,13 @@ function AddValue(value) {
                 calculation += '*('
             }
         }
-        
-    }
-    else {
+        else if (AnyCaracterIsOperator()) {
+            calculation += '('
+        }
+
+    } else {
         calculation += value;
     }
-
-    
 
     console.log(calculation)
 
@@ -45,28 +49,34 @@ function AddValue(value) {
     display.innerHTML = calculation;
 }
 
+function CaracterIsTotal() {
+    if (calculation.length =    ) {
+        return true
+    }
+    return false
+}
+
 function lastCaracterIsNumber() {
     if (calculation[calculation.length - 1] == "0" || calculation[calculation.length - 1] == "1" ||
         calculation[calculation.length - 1] == "2" || calculation[calculation.length - 1] == "3" ||
         calculation[calculation.length - 1] == "4" || calculation[calculation.length - 1] == "5" ||
         calculation[calculation.length - 1] == "6" || calculation[calculation.length - 1] == "7" ||
-        calculation[calculation.length - 1] == "8" || calculation[calculation.length - 1] == "9") 
-        {
-            return true
-        }
-
-        return false
+        calculation[calculation.length - 1] == "8" || calculation[calculation.length - 1] == "9") {
+        return true
+    }
+    return false
 }
 
+// Includes - Determina se um array/objeto contém um determinado elemento ou não, retornando true ou false
 function AnyCaracterIsOperator() {
     if (calculation.includes("*") || calculation.includes("/") || calculation.includes("%") ||
-        calculation.includes("+") || calculation.includes("-")  ) {
-            return true
-        }
-        return false
+        calculation.includes("+") || calculation.includes("-")) {
+        return true
+    }
+    return false
 }
 
-function removeOneValue(){
+function removeOneValue() {
     calculation = calculation.slice(0, calculation.length - 1)
     display.innerHTML = calculation
 }
@@ -119,7 +129,7 @@ function CalculateResult() {
     //         }
     //     }
     // }
- 
+
     while (operators.includes('*')) {
         for (let i = 0; i < operators.length; i++) {
             let result;
@@ -135,18 +145,18 @@ function CalculateResult() {
             let result;
             result = numbers[i] / numbers[i + 1];
             numbers.splice(i, 2, result);
-            operators.splice(i, 1); 
-            break; 
+            operators.splice(i, 1);
+            break;
         }
     }
 
     while (operators.includes('%')) {
         for (let i = 0; i < operators.length; i++) {
             result = numbers[i] * numbers[i + 1]; // Multiplica o valor pelo valor seguinte
-            numbers.splice(i, 2, result); 
-            operators.splice(i, 1); 
+            numbers.splice(i, 2, result);
+            operators.splice(i, 1);
             break;
-            
+
         }
     }
 
