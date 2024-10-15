@@ -17,16 +17,58 @@ function AddValue(value) {
                 display.innerHTML = calculation; 
                 return
             }
-
     } 
 
-    calculation += value;
+    if (value == "(") {
+        if (lastCaracterIsNumber()){
+            if (AnyCaracterIsOperator()) {
+                calculation += ')'
+            }
+            else {
+                calculation += '*('
+            }
+        }
+        
+    }
+    else {
+        calculation += value;
+    }
+
+    
+
+    console.log(calculation)
 
     const maxLength = 25;
     if (calculation.length > maxLength) {
         calculation = calculation.slice(0, maxLength); // Trunca o valor
     }
     display.innerHTML = calculation;
+}
+
+function lastCaracterIsNumber() {
+    if (calculation[calculation.length - 1] == "0" || calculation[calculation.length - 1] == "1" ||
+        calculation[calculation.length - 1] == "2" || calculation[calculation.length - 1] == "3" ||
+        calculation[calculation.length - 1] == "4" || calculation[calculation.length - 1] == "5" ||
+        calculation[calculation.length - 1] == "6" || calculation[calculation.length - 1] == "7" ||
+        calculation[calculation.length - 1] == "8" || calculation[calculation.length - 1] == "9") 
+        {
+            return true
+        }
+
+        return false
+}
+
+function AnyCaracterIsOperator() {
+    if (calculation.includes("*") || calculation.includes("/") || calculation.includes("%") ||
+        calculation.includes("+") || calculation.includes("-")  ) {
+            return true
+        }
+        return false
+}
+
+function removeOneValue(){
+    calculation = calculation.slice(0, calculation.length - 1)
+    display.innerHTML = calculation
 }
 
 function removeValue() {
@@ -43,9 +85,40 @@ function CalculateResult() {
         return parseFloat(p1) / 100;
     });
 
+    expression = expression.replace(/\(\d+\)/g, '');
+
     // Expressão regular para separar números e operadores
     let numbers = expression.split(/[\+\-\*\/]/).map(Number); // Separa números e converte para floats
     let operators = expression.replace(/[0-9]|\./g, '').split(''); // Extrai operadores
+
+    // while (operators.includes('(')) {
+    //     for (let i = 0; i < operators.length; i++) {
+    //         if (operators[i] === '*' || operators[i] === '/' || operators[i] === '%' ||
+    //             operators[i] === '+' || operators[i] === '-') {
+    //             let result;
+    //             switch (operators[i]) {
+    //                 case '*':
+    //                     result = numbers[i] * numbers[i + 1];
+    //                     break;
+    //                 case '/':
+    //                     result = numbers[i] / numbers[i + 1];
+    //                     break;
+    //                 case '%':
+    //                     result = numbers[i] * numbers[i + 1];
+    //                     break;
+    //                 case '+':
+    //                     result = numbers[i] + numbers[i + 1];
+    //                     break;
+    //                 case '-':
+    //                     result = numbers[i] - numbers[i + 1];
+    //                     break;
+    //             }
+    //             numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
+    //             operators.splice(i, 1); // Remove o operador
+    //             break;
+    //         }
+    //     }
+    // }
  
     while (operators.includes('*')) {
         for (let i = 0; i < operators.length; i++) {
