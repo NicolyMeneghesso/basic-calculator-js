@@ -5,11 +5,13 @@ let btnNum = document.querySelectorAll('.btn')
 let calculation = ''
 
 function AddValue(value) {
+    // Se value é um operador (retorna true), depois, Se a variavel é o value (retorna true)  
     if (value == "+" || value == "-" || value == "/" || value == "*" || value == "%") {
         if (calculation[calculation.length - 1] == value) {
             return
         }
 
+        // Se a variavel é um operador, não deixa add 2 vezes repetidas  
         if (calculation[calculation.length - 1] == "+" || calculation[calculation.length - 1] == "-" ||
             calculation[calculation.length - 1] == "/" || calculation[calculation.length - 1] == "*" ||
             calculation[calculation.length - 1] == "%") {
@@ -20,40 +22,57 @@ function AddValue(value) {
     }
 
     if (value == "(") {
+        // Se a variavel esta vazia, add (  
         if (calculation == '') {
             calculation += '('
         }
-
-        if (lastCaracterIsNumber()) {
-            if (AnyCaracterIsOperator()) {
-                calculation += ')'
+        // Se não, o ultimo caracter da variavel é um numero  
+        else if (lastCaracterIsNumber()) {
+            if (AnyCaracterIsOperator()) {  // Se a variavel possui qualquer operador  
+                if (!canCloseParenthesis()) { // Se a variavel não tem ( para fecha add *(  
+                    calculation += '*('
+                }
+                else {                      // Se não, a variavel fecha o )
+                    calculation += ')' 
+                }
+            } 
+            else {              
+                if (canCloseParenthesis()) {  // Se a variavel tem ) para fechar, add )
+                    calculation += ')'
+                } else {
+                    calculation += '*(' // Se não, a variavel add (
+                }
             }
-            else {
+        }
+        // Se não, a variavel possui qualquer operador
+        else if (AnyCaracterIsOperator()) {
+            // Se o ultimo caracter for um number ou o ultino caracter for ) [retorna true/false] e a variavel tem ) para fechar
+            if ((lastCaracterIsNumber() || calculation[calculation.length -1] == ')') && canCloseParenthesis()) {
+               calculation += ')'
+            } 
+            // Se não, o ultimo caracter da variavel é ), add *(
+            else if (calculation[calculation.length -1] == ')') {
                 calculation += '*('
             }
+            // Se não, add (
+            else {
+                calculation += '('
+            }
+        } 
+        // Se não, o ultimo caracter da variavel é ), add *(
+        else if (calculation[calculation.length -1] == ')') {
+            calculation += '*('
         }
-        else if (AnyCaracterIsOperator()) {
-            calculation += '('
-        }
-
+    // Se não tiver (, continua e ignora o de cima
     } else {
         calculation += value;
     }
 
-    console.log(calculation)
-
     const maxLength = 25;
     if (calculation.length > maxLength) {
-        calculation = calculation.slice(0, maxLength); // Trunca o valor
+        calculation = calculation.slice(0, maxLength); // Define que calculation incia no 0 e finaliza no maxLength
     }
     display.innerHTML = calculation;
-}
-
-function CaracterIsTotal() {
-    if (calculation.length =    ) {
-        return true
-    }
-    return false
 }
 
 function lastCaracterIsNumber() {
@@ -76,6 +95,22 @@ function AnyCaracterIsOperator() {
     return false
 }
 
+function canCloseParenthesis() {
+    let openParenthesis = 0
+    let closeParenthesis = 0
+
+    //criar um loop para contar os parenteses abertos/fechados
+    for (let i = 0; i < calculation.length; i++) {
+        if (calculation[i] === '(') {
+            openParenthesis++
+        } else if (calculation[i] === ')') {
+            closeParenthesis++
+        }
+    }
+
+    return openParenthesis > closeParenthesis
+}
+
 function removeOneValue() {
     calculation = calculation.slice(0, calculation.length - 1)
     display.innerHTML = calculation
@@ -95,58 +130,25 @@ function CalculateResult() {
         return parseFloat(p1) / 100;
     });
 
-    expression = expression.replace(/\(\d+\)/g, '');
-
     // Expressão regular para separar números e operadores
     let numbers = expression.split(/[\+\-\*\/]/).map(Number); // Separa números e converte para floats
     let operators = expression.replace(/[0-9]|\./g, '').split(''); // Extrai operadores
 
-    // while (operators.includes('(')) {
-    //     for (let i = 0; i < operators.length; i++) {
-    //         if (operators[i] === '*' || operators[i] === '/' || operators[i] === '%' ||
-    //             operators[i] === '+' || operators[i] === '-') {
-    //             let result;
-    //             switch (operators[i]) {
-    //                 case '*':
-    //                     result = numbers[i] * numbers[i + 1];
-    //                     break;
-    //                 case '/':
-    //                     result = numbers[i] / numbers[i + 1];
-    //                     break;
-    //                 case '%':
-    //                     result = numbers[i] * numbers[i + 1];
-    //                     break;
-    //                 case '+':
-    //                     result = numbers[i] + numbers[i + 1];
-    //                     break;
-    //                 case '-':
-    //                     result = numbers[i] - numbers[i + 1];
-    //                     break;
-    //             }
-    //             numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
-    //             operators.splice(i, 1); // Remove o operador
-    //             break;
-    //         }
-    //     }
-    // }
-
-    while (operators.includes('*')) {
+    
+    while (operators.includes('*') || operators.includes('/')) {
         for (let i = 0; i < operators.length; i++) {
-            let result;
-            result = numbers[i] * numbers[i + 1];
-            numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
-            operators.splice(i, 1); // Remove o operador
-            break; // Reinicia o loop para resolver outros operadores de mesma precedência
-        }
-    }
-
-    while (operators.includes('/')) {
-        for (let i = 0; i < operators.length; i++) {
-            let result;
-            result = numbers[i] / numbers[i + 1];
-            numbers.splice(i, 2, result);
-            operators.splice(i, 1);
-            break;
+            if (operators[i] === '*') {
+                let result = numbers[i] * numbers[i + 1];
+                numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
+                operators.splice(i, 1); // Remove o operador
+                break; // Reinicia o loop para resolver outros operadores de mesma precedência
+            } 
+            else if (operators[i] === '/') {
+                let result = numbers[i] / numbers[i + 1];
+                numbers.splice(i, 2, result);
+                operators.splice(i, 1);
+                break;
+            }
         }
     }
 
@@ -163,18 +165,16 @@ function CalculateResult() {
     // Agora resolver adição e subtração
     while (operators.includes('+') || operators.includes('-')) {
         for (let i = 0; i < operators.length; i++) {
-            if (operators[i] === '+' || operators[i] === '-') {
-                let result;
-                switch (operators[i]) {
-                    case '+':
-                        result = numbers[i] + numbers[i + 1];
-                        break;
-                    case '-':
-                        result = numbers[i] - numbers[i + 1];
-                        break;
-                }
-                numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
-                operators.splice(i, 1); // Remove o operador
+            if (operators[i] === '+') {
+                let result = numbers[i] + numbers[i + 1];
+                numbers.splice(i, 2, result);
+                operators.splice(i, 1);
+                break;
+            }
+            else if (operators[i] === '-') {
+                let result = numbers[i] - numbers[i + 1];
+                numbers.splice(i, 2, result);
+                operators.splice(i, 1);
                 break;
             }
         }
