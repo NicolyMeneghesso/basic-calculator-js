@@ -122,64 +122,25 @@ function removeValue() {
 }
 
 function CalculateResult() {
-    // Remove espaços desnecessários
-    let expression = calculation.replace(/\s+/g, '');
+    try {
+        // Remove espaços desnecessários
+        let expression = calculation.replace(/\s+/g, '');
 
-    // Substitui "50%" por "0.5" (tratamento da porcentagem) e divide por 100
-    expression = expression.replace(/(\d+)%/g, (match, p1) => {
-        return parseFloat(p1) / 100;
-    });
+        // Substitui "50%" por "0.5" (tratamento da porcentagem) e divide por 100
+        expression = expression.replace(/(\d+)%/g, (match, p1) => {
+            return parseFloat(p1) / 100;
+        });
 
-    // Expressão regular para separar números e operadores
-    let numbers = expression.split(/[\+\-\*\/]/).map(Number); // Separa números e converte para floats
-    let operators = expression.replace(/[0-9]|\./g, '').split(''); // Extrai operadores
+        // Avalia a expressão usando eval()
+        let result = eval(expression);
 
-    
-    while (operators.includes('*') || operators.includes('/')) {
-        for (let i = 0; i < operators.length; i++) {
-            if (operators[i] === '*') {
-                let result = numbers[i] * numbers[i + 1];
-                numbers.splice(i, 2, result); // Substitui o número atual e o próximo pelo resultado
-                operators.splice(i, 1); // Remove o operador
-                break; // Reinicia o loop para resolver outros operadores de mesma precedência
-            } 
-            else if (operators[i] === '/') {
-                let result = numbers[i] / numbers[i + 1];
-                numbers.splice(i, 2, result);
-                operators.splice(i, 1);
-                break;
-            }
-        }
+        // Exibe o resultado
+        calculation = `${result}`;
+        display.innerHTML = calculation;
+    } catch (error) {
+        // Exibe uma mensagem de erro amigável no display
+        display.innerHTML = "Erro na expressão";
+        console.error("Erro ao calcular a expressão: ", error.message);
     }
-
-    while (operators.includes('%')) {
-        for (let i = 0; i < operators.length; i++) {
-            result = numbers[i] * numbers[i + 1]; // Multiplica o valor pelo valor seguinte
-            numbers.splice(i, 2, result);
-            operators.splice(i, 1);
-            break;
-
-        }
-    }
-
-    // Agora resolver adição e subtração
-    while (operators.includes('+') || operators.includes('-')) {
-        for (let i = 0; i < operators.length; i++) {
-            if (operators[i] === '+') {
-                let result = numbers[i] + numbers[i + 1];
-                numbers.splice(i, 2, result);
-                operators.splice(i, 1);
-                break;
-            }
-            else if (operators[i] === '-') {
-                let result = numbers[i] - numbers[i + 1];
-                numbers.splice(i, 2, result);
-                operators.splice(i, 1);
-                break;
-            }
-        }
-    }
-
-    calculation = `${numbers[0]}`;
-    display.innerHTML = calculation;
 }
+
