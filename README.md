@@ -9,6 +9,8 @@ A calculadora suporta as quatro operações aritméticas principais (adição, s
 * CSS
 * Bootstrap
 * JavaScript
-  
+
+## Pré-visualização
+
 ![Capa do Projeto](./images/calculadora.jpg)
 ![utilização do Projeto](./images/calculadora_teste.jpg)
