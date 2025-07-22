@@ -14,3 +14,5 @@ A calculadora suporta as quatro operações aritméticas principais (adição, s
 
 ![Capa do Projeto](./images/calculadora.jpg)
 ![utilização do Projeto](./images/calculadora_teste.jpg)
+![utilização do Projeto](./images/calculadora_teste2.jpg)
+
