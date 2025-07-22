@@ -1,5 +1,5 @@
 body {
-    background: #060407;
+    background: #212529;
     color: #fff;
     margin: 0 auto;
 }
@@ -7,9 +7,10 @@ body {
 .card-body {
     width: 50%;
     height: 80vh;
-    background: linear-gradient(15deg, rgba(43, 9, 26, 1) 20%, rgba(84, 21, 51, 1) 80%, rgba(100, 26, 60, 0.5) 100%);
+    background: linear-gradient(25deg, rgb(130 21 73) 80%, rgb(168 5 80 / 50%) 100%);
     overflow: hidden;
     margin: 5% auto;
+    border-radius: 5%;
 }
 
 .content {
