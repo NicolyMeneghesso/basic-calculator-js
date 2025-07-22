@@ -1,15 +1,19 @@
 body {
     background: #212529;
     color: #fff;
-    margin: 0 auto;
+    margin: 0;
+    height: 100vh;
 }
 
 .card-body {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 50%;
     height: 80vh;
     background: linear-gradient(25deg, rgb(130 21 73) 80%, rgb(168 5 80 / 50%) 100%);
     overflow: hidden;
-    margin: 5% auto;
     border-radius: 5%;
 }
 
